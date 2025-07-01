@@ -36,7 +36,7 @@ export function LiveStatsSection() {
         />
         <StatsCard
           title="BNB STAKED"
-          value={<AnimatedCounter end={stats.bnbStaked} decimals={2} className="text-black" />}
+          value={<AnimatedCounter end={stats.bnbStaked} decimals={2} className="text-white" />}
           icon={<Coins className="h-8 w-8" />}
           color="yellow"
         />
