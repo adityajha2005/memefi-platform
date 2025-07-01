@@ -2,6 +2,7 @@
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { useWalletContext } from "@/components/wallet/wallet-provider"
+
 export function Navigation() {
   const walletContext = useWalletContext()
 
@@ -32,21 +33,21 @@ export function Navigation() {
         </motion.div>
       ))}
       {walletContext.isConnected && (
-        // <motion.div
-        //   initial={{ opacity: 0, x: 20 }}
-        //   animate={{ opacity: 1, x: 0 }}
-        //   exit={{ opacity: 0, x: 20 }}
-        //   transition={{ duration: 0.3 }}
-        //   whileHover={{ scale: 1.05 }}
-        //   whileTap={{ scale: 0.95 }}
-        // >
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 20 }}
+          transition={{ duration: 0.3 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           <Link
             href="/dashboard"
             className="text-sm font-bold hover:text-green-500 transition-colors uppercase tracking-wide"
           >
             Dashboard
           </Link>
-        // </motion.div>
+        </motion.div>
       )}
     </nav>
   )

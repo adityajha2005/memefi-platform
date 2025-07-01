@@ -19,7 +19,7 @@ export function WalletButton() {
     isMetaMaskInstalled,
   } = useWalletContext()
 
-  const { showToast, ToastContainer } = useToast()
+  const { showToast } = useToast()
 
   // Show error toast when there's an error
   useEffect(() => {
@@ -76,7 +76,6 @@ export function WalletButton() {
             </Button>
           </motion.div>
         </motion.div>
-        <ToastContainer />
       </>
     )
   }
@@ -140,7 +139,6 @@ export function WalletButton() {
           </motion.span>
         </Button>
       </motion.div>
-      <ToastContainer />
     </>
   )
 } 
