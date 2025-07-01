@@ -15,6 +15,7 @@ export function FloatingActionButton() {
 
   const handleStake = () => {
     console.log("Quick stake")
+    router.push("/explore")
     setIsOpen(false)
   }
 

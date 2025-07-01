@@ -25,7 +25,65 @@ const getRankIcon = (rank: number) => {
 export function LeaderboardItem({ meme, index }: LeaderboardItemProps) {
   return (
     <div className={`meme-card p-4 ${meme.isWinner ? "winner-glow bg-yellow-50" : ""}`}>
-      <div className="flex items-center gap-4">
+      {/* Mobile Layout (sm and below) */}
+      <div className="block sm:hidden">
+        {/* Top Row: Rank + Title + Winner Badge */}
+        <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center justify-center w-10 h-10 flex-shrink-0">
+            {getRankIcon(index + 1)}
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="font-black text-base uppercase tracking-tight truncate">{meme.title}</h3>
+              {meme.isWinner && (
+                <Badge className="bg-yellow-400 text-black border-2 border-black font-black text-xs">
+                  <Trophy className="w-3 h-3 mr-1" />
+                  WINNER
+                </Badge>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Middle Row: Image + Creator */}
+        <div className="flex items-center gap-3 mb-3">
+          <Image
+            src={meme.image || "/placeholder.svg"}
+            alt={meme.title}
+            width={50}
+            height={50}
+            className="rounded-lg object-cover border-2 border-black flex-shrink-0"
+          />
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <Avatar className="h-5 w-5 border-2 border-black flex-shrink-0">
+              <AvatarImage src={meme.creator.avatar || "/placeholder.svg"} />
+              <AvatarFallback className="bg-black text-white font-bold text-xs">{meme.creator.name[0]}</AvatarFallback>
+            </Avatar>
+            <span className="text-sm font-bold text-gray-600 uppercase truncate">{meme.creator.name}</span>
+          </div>
+        </div>
+
+        {/* Bottom Row: Stats */}
+        <div className="flex items-center justify-center gap-4">
+          <div className="text-center">
+            <div className="flex items-center gap-1 bg-yellow-400 text-black px-2 py-1 border-2 border-black font-black mb-1">
+              <Coins className="h-3 w-3" />
+              <span className="text-sm">{meme.bnbStaked}</span>
+            </div>
+            <span className="text-xs font-bold text-gray-500 uppercase">BNB</span>
+          </div>
+          <div className="text-center">
+            <div className="flex items-center gap-1 bg-blue-400 text-white px-2 py-1 border-2 border-black font-black mb-1">
+              <Twitter className="h-3 w-3" />
+              <span className="text-sm">{meme.twitterLikes}</span>
+            </div>
+            <span className="text-xs font-bold text-gray-500 uppercase">LIKES</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Layout (sm and above) */}
+      <div className="hidden sm:flex items-center gap-4">
         <div className="flex items-center justify-center w-12 h-12">{getRankIcon(index + 1)}</div>
 
         <Image
@@ -36,8 +94,8 @@ export function LeaderboardItem({ meme, index }: LeaderboardItemProps) {
           className="rounded-lg object-cover border-2 border-black"
         />
 
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
             <h3 className="font-black text-lg uppercase tracking-tight">{meme.title}</h3>
             {meme.isWinner && (
               <Badge className="bg-yellow-400 text-black border-2 border-black font-black">
@@ -55,7 +113,7 @@ export function LeaderboardItem({ meme, index }: LeaderboardItemProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 lg:gap-6">
           <div className="text-center">
             <div className="flex items-center gap-1 bg-yellow-400 text-black px-2 py-1 border-2 border-black font-black mb-1">
               <Coins className="h-4 w-4" />

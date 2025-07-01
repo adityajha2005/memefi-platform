@@ -22,32 +22,32 @@ export function LeaderboardSection() {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <Tabs defaultValue="staked" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto bg-black border-4 border-black">
+        <TabsList className="grid w-full grid-cols-2 max-w-sm sm:max-w-md mx-auto bg-black border-4 border-black">
           <TabsTrigger
             value="staked"
             onClick={() => setSortBy("staked")}
-            className="font-black uppercase text-white data-[state=active]:bg-green-400 data-[state=active]:text-black"
+            className="font-black uppercase text-white data-[state=active]:bg-green-400 data-[state=active]:text-black text-xs sm:text-sm"
           >
             MOST STAKED
           </TabsTrigger>
           <TabsTrigger
             value="liked"
             onClick={() => setSortBy("liked")}
-            className="font-black uppercase text-white data-[state=active]:bg-red-400 data-[state=active]:text-black"
+            className="font-black uppercase text-white data-[state=active]:bg-red-400 data-[state=active]:text-black text-xs sm:text-sm"
           >
             MOST LIKED
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="staked" className="space-y-4">
+        <TabsContent value="staked" className="space-y-3 sm:space-y-4">
           {sortedData.map((meme, index) => (
             <LeaderboardItem key={meme.id} meme={meme} index={index} />
           ))}
         </TabsContent>
 
-        <TabsContent value="liked" className="space-y-4">
+        <TabsContent value="liked" className="space-y-3 sm:space-y-4">
           {sortedData.map((meme, index) => (
             <LeaderboardItem key={meme.id} meme={meme} index={index} />
           ))}
