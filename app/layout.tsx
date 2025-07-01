@@ -5,6 +5,7 @@ import "./globals.css"
 import { Header } from "@/components/header"
 import { ParticleBackground } from "@/components/ui/particle-background"
 import { FloatingActionButton } from "@/components/ui/floating-action-button"
+import { WalletProvider } from "@/components/wallet/wallet-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,10 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ParticleBackground />
-        <Header />
-        <main className="min-h-screen bg-gray-50 relative z-10">{children}</main>
-        <FloatingActionButton />
+        <WalletProvider>
+          <ParticleBackground />
+          <Header />
+          <main className="min-h-screen bg-gray-50 relative z-10">{children}</main>
+          <FloatingActionButton />
+        </WalletProvider>
       </body>
     </html>
   )

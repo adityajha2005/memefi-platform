@@ -4,7 +4,9 @@ import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CustomButton } from "@/components/ui/custom-button"
 import { TrendingBadge } from "@/components/ui/trending-badge"
-import { Coins, Heart, Twitter, Eye } from "lucide-react"
+import { Coins, Heart, Twitter, Eye, Wallet } from "lucide-react"
+import { useWalletContext } from "@/components/wallet/wallet-provider"
+import { useToast } from "@/components/ui/toast-notification"
 import type { Meme } from "@/types"
 
 interface MemeCardProps {
@@ -15,6 +17,22 @@ interface MemeCardProps {
 }
 
 export function MemeCard({ meme, showTwitterLikes = false, showViews = false, onStake }: MemeCardProps) {
+  const { isConnected, connectWallet } = useWalletContext()
+  const { showToast } = useToast()
+
+  const handleStake = async () => {
+    if (!isConnected) {
+      showToast("Please connect your wallet to stake on memes!", "error")
+      await connectWallet()
+      return
+    }
+    
+    if (onStake) {
+      onStake(meme.id)
+      showToast(`Staking on "${meme.title}" initiated!`, "success")
+    }
+  }
+
   return (
     <div className="meme-card p-0 overflow-hidden">
       <div className="relative">
@@ -71,8 +89,22 @@ export function MemeCard({ meme, showTwitterLikes = false, showViews = false, on
           )}
         </div>
 
-        <CustomButton variant="primary" className="w-full text-lg" onClick={() => onStake?.(meme.id)}>
-          STAKE NOW
+        <CustomButton 
+          variant="primary" 
+          className="w-full text-lg" 
+          onClick={handleStake}
+        >
+          {isConnected ? (
+            <>
+              <Coins className="mr-2 h-4 w-4" />
+              STAKE NOW
+            </>
+          ) : (
+            <>
+              <Wallet className="mr-2 h-4 w-4" />
+              CONNECT TO STAKE
+            </>
+          )}
         </CustomButton>
       </div>
     </div>
