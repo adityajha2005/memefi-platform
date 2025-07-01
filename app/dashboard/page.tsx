@@ -1,6 +1,22 @@
+"use client"
+
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { DashboardTabs } from "@/components/dashboard-tabs"
+import { useWalletContext } from "@/components/wallet/wallet-provider"
 
 export default function DashboardPage() {
+  const { isConnected } = useWalletContext()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isConnected) {
+      router.push("/")
+    }
+  }, [isConnected, router])
+
+  if (!isConnected) return null 
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-8">
