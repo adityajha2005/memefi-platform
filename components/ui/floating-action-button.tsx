@@ -39,7 +39,7 @@ export function FloatingActionButton() {
           <button
             key={index}
             onClick={action.onClick}
-            className={`${action.color} text-black p-3 border-2 border-black retro-border hover:scale-110 transition-all duration-200 group`}
+            className={`${action.color} text-black p-3 border-2 border-black retro-border hover:scale-110 transition-all duration-200 group flex items-center justify-center`}
             style={{ animationDelay: `${index * 100}ms` }}
           >
             <action.icon className="h-5 w-5" />
@@ -53,7 +53,7 @@ export function FloatingActionButton() {
       {/* Main FAB */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-14 h-14 bg-black text-green-400 border-4 border-green-400 retro-border hover:scale-110 transition-all duration-200 ${isOpen ? "rotate-45" : ""}`}
+        className={`w-14 h-14 bg-black text-green-400 border-4 border-green-400 retro-border hover:scale-110 transition-all duration-200 flex items-center justify-center ${isOpen ? "rotate-45" : ""}`}
         style={{ boxShadow: "0 0 20px rgba(0, 255, 65, 0.5)" }}
       >
         {isOpen ? <X className="h-6 w-6" /> : <Plus className="h-6 w-6" />}

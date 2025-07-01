@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import { motion } from "framer-motion"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CustomButton } from "@/components/ui/custom-button"
 import { TrendingBadge } from "@/components/ui/trending-badge"
@@ -34,8 +35,21 @@ export function MemeCard({ meme, showTwitterLikes = false, showViews = false, on
   }
 
   return (
-    <div className="meme-card p-0 overflow-hidden">
-      <div className="relative">
+    <motion.div
+      className="meme-card p-0 overflow-hidden"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ 
+        y: -8,
+        transition: { duration: 0.2 }
+      }}
+    >
+      <motion.div 
+        className="relative"
+        whileHover={{ scale: 1.05 }}
+        transition={{ duration: 0.3 }}
+      >
         <Image
           src={meme.image || "/placeholder.svg"}
           alt={meme.title}
@@ -44,14 +58,31 @@ export function MemeCard({ meme, showTwitterLikes = false, showViews = false, on
           className="w-full h-48 object-cover"
         />
         {meme.trending && (
-          <div className="absolute top-3 right-3">
+          <motion.div 
+            className="absolute top-3 right-3"
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
             <TrendingBadge />
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
-      <div className="p-4 bg-white">
-        <h3 className="font-black text-xl mb-3 uppercase tracking-tight">{meme.title}</h3>
+      <motion.div 
+        className="p-4 bg-white"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2, duration: 0.3 }}
+      >
+        <motion.h3 
+          className="font-black text-xl mb-3 uppercase tracking-tight"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+        >
+          {meme.title}
+        </motion.h3>
 
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="h-10 w-10 border-2 border-black">
@@ -89,24 +120,29 @@ export function MemeCard({ meme, showTwitterLikes = false, showViews = false, on
           )}
         </div>
 
-        <CustomButton 
-          variant="primary" 
-          className="w-full text-lg" 
-          onClick={handleStake}
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          {isConnected ? (
-            <>
-              <Coins className="mr-2 h-4 w-4" />
-              STAKE NOW
-            </>
-          ) : (
-            <>
-              <Wallet className="mr-2 h-4 w-4" />
-              CONNECT TO STAKE
-            </>
-          )}
-        </CustomButton>
-      </div>
-    </div>
+          <CustomButton 
+            variant="primary" 
+            className="w-full text-lg" 
+            onClick={handleStake}
+          >
+            {isConnected ? (
+              <>
+                <Coins className="mr-2 h-4 w-4" />
+                STAKE NOW
+              </>
+            ) : (
+              <>
+                <Wallet className="mr-2 h-4 w-4" />
+                CONNECT TO STAKE
+              </>
+            )}
+          </CustomButton>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   )
 }
