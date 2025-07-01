@@ -25,11 +25,7 @@ export default function RootLayout({
         <ParticleBackground />
         <Header />
         <main className="min-h-screen bg-gray-50 relative z-10">{children}</main>
-        <FloatingActionButton
-          onUpload={() => (window.location.href = "/upload")}
-          onStake={() => console.log("Quick stake")}
-          onLeaderboard={() => (window.location.href = "/leaderboard")}
-        />
+        <FloatingActionButton />
       </body>
     </html>
   )

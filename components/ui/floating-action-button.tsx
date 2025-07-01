@@ -1,21 +1,32 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Plus, Upload, Zap, Trophy, X } from "lucide-react"
 
-interface FloatingActionButtonProps {
-  onUpload?: () => void
-  onStake?: () => void
-  onLeaderboard?: () => void
-}
-
-export function FloatingActionButton({ onUpload, onStake, onLeaderboard }: FloatingActionButtonProps) {
+export function FloatingActionButton() {
   const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
+
+  const handleUpload = () => {
+    router.push("/upload")
+    setIsOpen(false)
+  }
+
+  const handleStake = () => {
+    console.log("Quick stake")
+    setIsOpen(false)
+  }
+
+  const handleLeaderboard = () => {
+    router.push("/leaderboard")
+    setIsOpen(false)
+  }
 
   const actions = [
-    { icon: Upload, label: "UPLOAD", color: "bg-green-400", onClick: onUpload },
-    { icon: Zap, label: "STAKE", color: "bg-yellow-400", onClick: onStake },
-    { icon: Trophy, label: "LEADERBOARD", color: "bg-red-400", onClick: onLeaderboard },
+    { icon: Upload, label: "UPLOAD", color: "bg-green-400", onClick: handleUpload },
+    { icon: Zap, label: "STAKE", color: "bg-yellow-400", onClick: handleStake },
+    { icon: Trophy, label: "LEADERBOARD", color: "bg-red-400", onClick: handleLeaderboard },
   ]
 
   return (
@@ -27,10 +38,7 @@ export function FloatingActionButton({ onUpload, onStake, onLeaderboard }: Float
         {actions.map((action, index) => (
           <button
             key={index}
-            onClick={() => {
-              action.onClick?.()
-              setIsOpen(false)
-            }}
+            onClick={action.onClick}
             className={`${action.color} text-black p-3 border-2 border-black retro-border hover:scale-110 transition-all duration-200 group`}
             style={{ animationDelay: `${index * 100}ms` }}
           >
