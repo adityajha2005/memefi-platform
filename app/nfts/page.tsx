@@ -12,8 +12,7 @@ export default function NFTsPage() {
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black py-20"
-      >
+        className="bg-gradient-to-r from-[#7FFFD4] to-[#87CEFA] text-black py-20"              >
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ scale: 0.8 }}
