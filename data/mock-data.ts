@@ -4,10 +4,10 @@ export const trendingMemes: Meme[] = [
   {
     id: 1,
     title: "Doge to the Moon",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://picsum.photos/400/300?random=1",
     creator: {
       name: "CryptoMemer",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "https://i.pravatar.cc/40?img=1",
     },
     bnbStaked: 45.67,
     likes: 1234,
@@ -17,10 +17,10 @@ export const trendingMemes: Meme[] = [
   {
     id: 2,
     title: "NFT Collector Problems",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://picsum.photos/400/300?random=2",
     creator: {
       name: "BlockchainBro",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "https://i.pravatar.cc/40?img=2",
     },
     bnbStaked: 32.45,
     likes: 987,
@@ -30,10 +30,10 @@ export const trendingMemes: Meme[] = [
   {
     id: 3,
     title: "When Gas Fees Hit",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://picsum.photos/400/300?random=3",
     creator: {
       name: "EthereumElf",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "https://i.pravatar.cc/40?img=3",
     },
     bnbStaked: 28.91,
     likes: 756,
@@ -43,10 +43,10 @@ export const trendingMemes: Meme[] = [
   {
     id: 4,
     title: "HODL Life",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://picsum.photos/400/300?random=4",
     creator: {
       name: "DiamondHands",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "https://i.pravatar.cc/40?img=4",
     },
     bnbStaked: 67.23,
     likes: 1567,
@@ -56,10 +56,10 @@ export const trendingMemes: Meme[] = [
   {
     id: 5,
     title: "DeFi Summer Vibes",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://picsum.photos/400/300?random=5",
     creator: {
       name: "YieldFarmer",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "https://i.pravatar.cc/40?img=5",
     },
     bnbStaked: 23.45,
     likes: 543,
@@ -69,14 +69,66 @@ export const trendingMemes: Meme[] = [
   {
     id: 6,
     title: "Rug Pull Survivor",
-    image: "/placeholder.svg?height=300&width=400",
+    image: "https://picsum.photos/400/300?random=6",
     creator: {
       name: "SafeMoonSailor",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "https://i.pravatar.cc/40?img=6",
     },
     bnbStaked: 19.87,
     likes: 432,
     twitterLikes: 432,
+    trending: false,
+  },
+  {
+    id: 7,
+    title: "Pepe Market Analysis",
+    image: "https://picsum.photos/400/300?random=7",
+    creator: {
+      name: "PepeTrader",
+      avatar: "https://i.pravatar.cc/40?img=7",
+    },
+    bnbStaked: 41.23,
+    likes: 892,
+    twitterLikes: 892,
+    trending: true,
+  },
+  {
+    id: 8,
+    title: "Wojak's Wisdom",
+    image: "https://picsum.photos/400/300?random=8",
+    creator: {
+      name: "WojakWise",
+      avatar: "https://i.pravatar.cc/40?img=8",
+    },
+    bnbStaked: 15.34,
+    likes: 623,
+    twitterLikes: 623,
+    trending: false,
+  },
+  {
+    id: 9,
+    title: "Chad Investment Strategy",
+    image: "https://picsum.photos/400/300?random=9",
+    creator: {
+      name: "ChadInvestor",
+      avatar: "https://i.pravatar.cc/40?img=9",
+    },
+    bnbStaked: 52.78,
+    likes: 1456,
+    twitterLikes: 1456,
+    trending: true,
+  },
+  {
+    id: 10,
+    title: "Moon Mission Loading",
+    image: "https://picsum.photos/400/300?random=10",
+    creator: {
+      name: "RocketRider",
+      avatar: "https://i.pravatar.cc/40?img=10",
+    },
+    bnbStaked: 38.91,
+    likes: 743,
+    twitterLikes: 743,
     trending: false,
   },
 ]
@@ -85,8 +137,8 @@ export const myMemes: Meme[] = [
   {
     id: 1,
     title: "My Epic Doge Meme",
-    image: "/placeholder.svg?height=100&width=100",
-    creator: { name: "You", avatar: "/placeholder.svg?height=40&width=40" },
+    image: "https://picsum.photos/100/100?random=101",
+    creator: { name: "You", avatar: "https://i.pravatar.cc/40?img=99" },
     bnbStaked: 23.45,
     views: 1234,
     likes: 567,
@@ -96,8 +148,8 @@ export const myMemes: Meme[] = [
   {
     id: 2,
     title: "Crypto Winter Vibes",
-    image: "/placeholder.svg?height=100&width=100",
-    creator: { name: "You", avatar: "/placeholder.svg?height=40&width=40" },
+    image: "https://picsum.photos/100/100?random=102",
+    creator: { name: "You", avatar: "https://i.pravatar.cc/40?img=99" },
     bnbStaked: 15.67,
     views: 890,
     likes: 234,
@@ -110,7 +162,7 @@ export const myStakes: Stake[] = [
   {
     id: 1,
     memeTitle: "HODL Life",
-    image: "/placeholder.svg?height=100&width=100",
+    image: "https://picsum.photos/100/100?random=201",
     creator: "DiamondHands",
     stakeAmount: 5.0,
     currentValue: 6.2,
@@ -120,7 +172,7 @@ export const myStakes: Stake[] = [
   {
     id: 2,
     memeTitle: "Doge to the Moon",
-    image: "/placeholder.svg?height=100&width=100",
+    image: "https://picsum.photos/100/100?random=202",
     creator: "CryptoMemer",
     stakeAmount: 3.5,
     currentValue: 4.1,
