@@ -45,3 +45,36 @@ export interface Stats {
   bnbStaked: number
   activeUsers: number
 }
+
+export interface WinnerNFT {
+  tokenId: number
+  winner: string
+  totalStaked: string 
+  contestId: number
+  memeId: number
+  timestamp: number
+  originalMemeHash: string
+  memeTitle?: string
+  memeImage?: string
+}
+
+export interface NFTMetadata {
+  name: string
+  description: string
+  image: string
+  attributes: Array<{
+    trait_type: string
+    value: string | number
+  }>
+  contest_id: number
+  meme_id: number
+  total_staked: string
+  winner_address: string
+  mint_timestamp: number
+  original_meme_hash: string
+}
+
+export interface ContractAddresses {
+  memeNFT: string
+  memeStaking: string
+}
