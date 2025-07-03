@@ -1,17 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Coins, FileImage, Trophy, History, Loader2 } from "lucide-react"
+import { Coins, FileImage, Trophy, Loader2 } from "lucide-react"
 import { MyMemesTab } from "@/components/dashboard/my-memes-tab"
 import { MyStakesTab } from "@/components/dashboard/my-stakes-tab"
 import { NFTCollectionTab } from "@/components/dashboard/nft-collection-tab"
-import { HistoryTab } from "@/components/dashboard/history-tab"
 import { useMemeStaking } from "@/hooks/use-meme-staking"
 import { useToast } from "@/components/ui/toast-notification"
 import { useWalletContext } from "@/components/wallet/wallet-provider"
 import type { Meme, Stake } from "@/types"
 
-type TabType = "memes" | "stakes" | "nfts" | "history"
+type TabType = "memes" | "stakes" | "nfts"
 
 export function DashboardTabs() {
   const [activeTab, setActiveTab] = useState<TabType>("memes")
@@ -135,10 +134,24 @@ export function DashboardTabs() {
   }
 
   const tabs = [
-    { id: "memes" as TabType, label: "MY MEMES", icon: FileImage },
-    { id: "stakes" as TabType, label: "MY STAKES", icon: Coins },
-    { id: "nfts" as TabType, label: "MY NFTS", icon: Trophy },
-    { id: "history" as TabType, label: "HISTORY", icon: History },
+    { 
+      id: "memes" as TabType, 
+      label: "MY MEMES", 
+      icon: FileImage,
+      count: userMemes.length
+    },
+    { 
+      id: "stakes" as TabType, 
+      label: "MY STAKES", 
+      icon: Coins,
+      count: userStakes.length
+    },
+    { 
+      id: "nfts" as TabType, 
+      label: "MY NFTS", 
+      icon: Trophy,
+      count: 0
+    }
   ]
 
   const renderTabContent = () => {
@@ -176,39 +189,35 @@ export function DashboardTabs() {
         )
       case "nfts":
         return <NFTCollectionTab />
-      case "history":
-        return <HistoryTab />
       default:
         return <MyMemesTab memes={userMemes} />
     }
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Tab Navigation */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-4">
         {tabs.map((tab) => {
           const Icon = tab.icon
+          const isActive = activeTab === tab.id
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-6 py-3 font-black uppercase tracking-wide transition-all border-4 ${
-                activeTab === tab.id
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-black border-black hover:bg-gray-100"
+              className={`flex-1 flex items-center gap-3 px-6 py-4 font-black text-lg uppercase tracking-wide transition-all ${
+                isActive
+                  ? "bg-black text-white"
+                  : "bg-white text-black border-2 border-black hover:bg-gray-50"
               }`}
             >
-              <Icon className="h-5 w-5" />
-              {tab.label}
-              {tab.id === "memes" && userMemes.length > 0 && (
-                <span className="ml-2 bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-black">
-                  {userMemes.length}
-                </span>
-              )}
-              {tab.id === "stakes" && userStakes.length > 0 && (
-                <span className="ml-2 bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-black">
-                  {userStakes.length}
+              <Icon className="h-6 w-6" />
+              <span>{tab.label}</span>
+              {tab.count > 0 && (
+                <span className={`ml-auto rounded-full w-8 h-8 flex items-center justify-center text-sm font-black ${
+                  isActive ? "bg-yellow-400 text-black" : "bg-black text-white"
+                }`}>
+                  {tab.count}
                 </span>
               )}
             </button>

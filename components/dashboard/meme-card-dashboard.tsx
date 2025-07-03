@@ -1,6 +1,7 @@
 import { CustomButton } from "@/components/ui/custom-button"
 import { Coins, Eye, Heart } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import type { Meme } from "@/types"
 
 interface MemeCardDashboardProps {
@@ -57,9 +58,11 @@ export function MemeCardDashboard({ meme }: MemeCardDashboardProps) {
         </div>
       </div>
 
-      <CustomButton variant="secondary" className="w-full">
-        VIEW DETAILS
-      </CustomButton>
+      <Link href={`/meme/${meme.id}`} className="block">
+        <CustomButton variant="secondary" className="w-full">
+          VIEW DETAILS
+        </CustomButton>
+      </Link>
     </div>
   )
 } 

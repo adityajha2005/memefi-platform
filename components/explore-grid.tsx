@@ -9,7 +9,7 @@ import { Coins, TrendingUp, Twitter, Loader2 } from "lucide-react"
 import Image from "next/image"
 import { useMemeStaking } from "@/hooks/use-meme-staking"
 import type { Meme } from "@/types"
-
+import { useRouter } from "next/navigation"
 export function ExploreGrid() {
   const [visibleMemes, setVisibleMemes] = useState(6)
   const [memes, setMemes] = useState<Meme[]>([])
@@ -65,6 +65,8 @@ export function ExploreGrid() {
     )
   }
 
+  const router = useRouter()
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -102,8 +104,8 @@ export function ExploreGrid() {
                   <Coins className="h-4 w-4" />
                   <span className="font-semibold">{meme.bnbStaked.toFixed(2)} BNB</span>
                 </div>
-                <div className="flex items-center gap-1 text-blue-600">
-                  <Twitter className="h-4 w-4" />
+                <div className="flex items-center gap-1 text-blue-600 cursor-pointer"
+                  onClick={() => router.push(`/meme/${meme.id}`)}>
                   <span className="font-semibold">{meme.twitterLikes}</span>
                 </div>
               </div>

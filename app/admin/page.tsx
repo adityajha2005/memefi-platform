@@ -11,6 +11,7 @@ import { AdminRecentActivity } from "@/components/admin/admin-recent-activity"
 import { useWalletContext } from "@/components/wallet/wallet-provider"
 import { CustomButton } from "@/components/ui/custom-button"
 import { AlertTriangle, Shield } from "lucide-react"
+import { PLATFORM_SETTINGS } from "@/lib/contracts"
 
 export default function AdminDashboard() {
   const { isConnected, account, connectWallet } = useWalletContext()
@@ -24,8 +25,8 @@ export default function AdminDashboard() {
     }
   }, [isConnected])
 
-  // Access control - in production, check if user is admin
-  if (!isConnected) {
+  // Access control - only allow deployer address
+  if (!isConnected || !account || account.toLowerCase() !== PLATFORM_SETTINGS.deployerAddress.toLowerCase()) {
     return (
       <div className="min-h-screen bg-black text-white p-6">
         <div className="container mx-auto max-w-2xl">
@@ -38,15 +39,21 @@ export default function AdminDashboard() {
               <AlertTriangle className="h-16 w-16 mx-auto mb-6 text-yellow-400" />
               <h1 className="text-3xl font-black uppercase mb-4">ACCESS DENIED</h1>
               <p className="text-lg font-bold text-gray-300 mb-6">
-                CONNECT WALLET TO ACCESS ADMIN PANEL
+                {!isConnected ? (
+                  "CONNECT WALLET TO ACCESS ADMIN PANEL"
+                ) : (
+                  "ONLY THE CONTRACT DEPLOYER CAN ACCESS THIS PAGE"
+                )}
               </p>
-              <CustomButton 
-                variant="primary" 
-                className="text-lg px-8"
-                onClick={connectWallet}
-              >
-                CONNECT WALLET
-              </CustomButton>
+              {!isConnected && (
+                <CustomButton 
+                  variant="primary" 
+                  className="text-lg px-8"
+                  onClick={connectWallet}
+                >
+                  CONNECT WALLET
+                </CustomButton>
+              )}
             </div>
           </motion.div>
         </div>

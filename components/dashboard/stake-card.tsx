@@ -2,6 +2,7 @@ import { useState } from "react"
 import { CustomButton } from "@/components/ui/custom-button"
 import { ArrowUpRight, ArrowDown, AlertTriangle, Clock, Loader2 } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import type { Stake } from "@/types"
 
 interface StakeCardProps {
@@ -46,15 +47,19 @@ export function StakeCard({ stake, canWithdraw = false, isContestActive = true, 
   return (
     <div className="meme-card p-4">
       <div className="flex items-start gap-4 mb-4">
-        <Image
-          src={stake.image || "/placeholder.svg"}
-          alt={stake.memeTitle}
-          width={80}
-          height={80}
-          className="rounded-lg object-cover border-2 border-black"
-        />
+        <Link href={`/meme/${stake.memeId}`}>
+          <Image
+            src={stake.image || "/placeholder.svg"}
+            alt={stake.memeTitle}
+            width={80}
+            height={80}
+            className="rounded-lg object-cover border-2 border-black hover:border-yellow-400 transition-colors"
+          />
+        </Link>
         <div className="flex-1">
-          <h3 className="font-black text-lg mb-1 uppercase tracking-tight">{stake.memeTitle}</h3>
+          <Link href={`/meme/${stake.memeId}`} className="hover:text-yellow-600 transition-colors">
+            <h3 className="font-black text-lg mb-1 uppercase tracking-tight">{stake.memeTitle}</h3>
+          </Link>
           <p className="text-sm font-bold text-gray-600 mb-2 uppercase">BY {stake.creator}</p>
           <div className="flex items-center gap-2 mb-2">
             <div className={`px-2 py-1 border-2 border-black font-black text-xs uppercase ${getStatusColor()}`}>
@@ -104,9 +109,11 @@ export function StakeCard({ stake, canWithdraw = false, isContestActive = true, 
       <div className="mt-4 space-y-2">
         {!showWithdrawConfirm ? (
           <div className="flex gap-2">
-            <CustomButton variant="secondary" className="flex-1 text-sm py-2">
-              VIEW MEME
-            </CustomButton>
+            <Link href={`/meme/${stake.memeId}`} className="flex-1">
+              <CustomButton variant="secondary" className="w-full text-sm py-2">
+                VIEW MEME
+              </CustomButton>
+            </Link>
             
             {canWithdraw && isContestActive ? (
               <CustomButton 
@@ -142,14 +149,14 @@ export function StakeCard({ stake, canWithdraw = false, isContestActive = true, 
             </div>
             
             <div className="flex gap-2">
-                             <CustomButton 
-                 variant="secondary" 
-                 className="flex-1 text-sm py-2"
-                 onClick={() => setShowWithdrawConfirm(false)}
-                 disabled={isWithdrawing}
-               >
-                 CANCEL
-               </CustomButton>
+              <CustomButton 
+                variant="secondary" 
+                className="flex-1 text-sm py-2"
+                onClick={() => setShowWithdrawConfirm(false)}
+                disabled={isWithdrawing}
+              >
+                CANCEL
+              </CustomButton>
               <CustomButton 
                 variant="primary" 
                 className="flex-1 text-sm py-2 bg-red-500 hover:bg-red-600"

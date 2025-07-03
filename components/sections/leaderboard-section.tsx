@@ -2,7 +2,7 @@
 
 import { LeaderboardItem } from "@/components/ui/leaderboard-item"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useMemeStaking } from "@/hooks/use-meme-staking"
 import { useWalletContext } from "@/components/wallet/wallet-provider"
 import { Loader2 } from "lucide-react"
@@ -73,21 +73,12 @@ export function LeaderboardSection() {
             tweetId: meme.tweetId
           }))
 
-        // Add rank and winner status
-        const leaderboardMemes: LeaderboardMeme[] = validMemes
-          .sort((a, b) => {
-            if (sortBy === "staked") {
-              return b.bnbStaked - a.bnbStaked
-            }
-            return Number(b.engagementScore || 0) - Number(a.engagementScore || 0)
-          })
-          .map((meme, index) => ({
-            ...meme,
-            rank: index + 1,
-            isWinner: index === 0,
-          }))
-
-        setMemes(leaderboardMemes)
+        // Store unsorted memes
+        setMemes(validMemes.map((meme, index) => ({
+          ...meme,
+          rank: index + 1,
+          isWinner: false
+        })))
       } catch (err: any) {
         console.error("Failed to load leaderboard data:", err)
         setError("Failed to load leaderboard data")
@@ -98,14 +89,23 @@ export function LeaderboardSection() {
     }
 
     loadLeaderboardData()
-  }, [isConnected, getNextMemeId, getMeme, sortBy])
+  }, [isConnected, getNextMemeId, getMeme])
 
-  const sortedData = [...memes].sort((a, b) => {
-    if (sortBy === "staked") {
-      return b.bnbStaked - a.bnbStaked
-    }
-    return Number(b.engagementScore || 0) - Number(a.engagementScore || 0)
-  })
+  // Move sorting logic to a useMemo to prevent unnecessary recalculations
+  const sortedData = useMemo(() => {
+    return [...memes]
+      .sort((a, b) => {
+        if (sortBy === "staked") {
+          return b.bnbStaked - a.bnbStaked
+        }
+        return Number(b.engagementScore || 0) - Number(a.engagementScore || 0)
+      })
+      .map((meme, index) => ({
+        ...meme,
+        rank: index + 1,
+        isWinner: index === 0
+      }))
+  }, [memes, sortBy])
 
   if (!isConnected) {
     return (
