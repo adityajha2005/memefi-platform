@@ -1,24 +1,137 @@
 "use client"
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { FileImage, Coins, Trophy, History } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Coins, FileImage, Trophy, History, Loader2 } from "lucide-react"
 import { MyMemesTab } from "@/components/dashboard/my-memes-tab"
 import { MyStakesTab } from "@/components/dashboard/my-stakes-tab"
 import { NFTCollectionTab } from "@/components/dashboard/nft-collection-tab"
-// import { HistoryTab } from "@/components/dashboard/history-tab"
 import { HistoryTab } from "@/components/dashboard/history-tab"
-import { myMemes, myStakes } from "@/data/mock-data"
+import { useMemeStaking } from "@/hooks/use-meme-staking"
+import { useToast } from "@/components/ui/toast-notification"
+import { useWalletContext } from "@/components/wallet/wallet-provider"
+import type { Meme, Stake } from "@/types"
 
 type TabType = "memes" | "stakes" | "nfts" | "history"
 
 export function DashboardTabs() {
   const [activeTab, setActiveTab] = useState<TabType>("memes")
+  const [userMemes, setUserMemes] = useState<Meme[]>([])
+  const [userStakes, setUserStakes] = useState<Stake[]>([])
+  const [isLoadingData, setIsLoadingData] = useState(true)
 
-  // Mock function to handle withdrawals - would call contract in real implementation
+  const { 
+    withdrawStake, 
+    getUserMemes,
+    getUserStakedMemes,
+    getMeme,
+    getUserStake,
+    isLoading 
+  } = useMemeStaking()
+  const { account, isConnected } = useWalletContext()
+  const { showToast } = useToast()
+
+  // Load user's memes and stakes
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (!isConnected || !account) {
+        setUserMemes([])
+        setUserStakes([])
+        setIsLoadingData(false)
+        return
+      }
+
+      setIsLoadingData(true)
+      try {
+        // Load user's memes
+        const memeIds = await getUserMemes(account)
+        const memePromises = memeIds.map(id => getMeme(id))
+        const memeResults = await Promise.all(memePromises)
+        
+        const loadedMemes: Meme[] = memeResults
+          .filter((meme): meme is NonNullable<typeof meme> => meme !== null)
+          .map((meme) => ({
+            id: Number(meme.id),
+            title: `Meme #${Number(meme.id)}`,
+            image: `https://gateway.pinata.cloud/ipfs/${meme.ipfsHash}`,
+            creator: {
+              name: `${meme.creator.slice(0, 6)}...${meme.creator.slice(-4)}`,
+              avatar: "/placeholder-user.jpg"
+            },
+            bnbStaked: Number(meme.totalStaked) / 1e18,
+            uploadDate: new Date(Number(meme.timestamp) * 1000).toLocaleDateString(),
+            status: meme.rewardDistributed ? "rewards_distributed" : "active"
+          }))
+
+        setUserMemes(loadedMemes)
+
+        // Load user's stakes
+        const stakedMemeIds = await getUserStakedMemes(account)
+        const stakePromises = stakedMemeIds.map(async (memeId) => {
+          const [meme, stakeAmount] = await Promise.all([
+            getMeme(memeId),
+            getUserStake(memeId, account)
+          ])
+          
+          if (!meme || parseFloat(stakeAmount) === 0) return null
+          
+          const stake: Stake = {
+            id: memeId, // Using meme ID as stake ID for simplicity
+            memeId,
+            memeTitle: `Meme #${memeId}`,
+            image: `https://gateway.pinata.cloud/ipfs/${meme.ipfsHash}`,
+            creator: `${meme.creator.slice(0, 6)}...${meme.creator.slice(-4)}`,
+            stakeAmount: parseFloat(stakeAmount),
+            currentValue: parseFloat(stakeAmount), // For now, assuming no change
+            profit: 0, // Would need to calculate based on rewards
+            stakeDate: new Date(Number(meme.timestamp) * 1000).toLocaleDateString()
+          }
+          
+          return stake
+        })
+
+        const stakeResults = await Promise.all(stakePromises)
+        const loadedStakes = stakeResults.filter((stake): stake is Stake => stake !== null)
+        
+        setUserStakes(loadedStakes)
+
+      } catch (err) {
+        console.error("Failed to load user data:", err)
+        showToast("Failed to load your data from blockchain", "error")
+      } finally {
+        setIsLoadingData(false)
+      }
+    }
+
+    loadUserData()
+  }, [account, isConnected, getUserMemes, getUserStakedMemes, getMeme, getUserStake, showToast])
+
+  // Handle stake withdrawal with real contract interaction
   const handleWithdraw = async (stakeId: number) => {
-    console.log(`Withdrawing stake ${stakeId}`)
-    // await contract.withdrawStake(memeId)
+    if (!isConnected || !account) {
+      showToast("Please connect your wallet to withdraw stake!", "error")
+      return
+    }
+
+    try {
+      showToast("Processing withdrawal...", "info")
+      
+      // Find the stake to get the meme ID
+      const stake = userStakes.find(s => s.id === stakeId)
+      if (!stake) {
+        throw new Error("Stake not found")
+      }
+
+      const txHash = await withdrawStake(stake.memeId)
+      
+      showToast(`Successfully withdrew ${stake.stakeAmount} BNB!`, "success")
+      
+      // Remove the stake from the list
+      setUserStakes(prev => prev.filter(s => s.id !== stakeId))
+      
+    } catch (err: any) {
+      console.error("Withdrawal failed:", err)
+      showToast(err.message || "Failed to withdraw stake. Please try again.", "error")
+    }
   }
 
   const tabs = [
@@ -29,16 +142,36 @@ export function DashboardTabs() {
   ]
 
   const renderTabContent = () => {
+    if (isLoadingData) {
+      return (
+        <div className="text-center py-12">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-yellow-400" />
+          <h3 className="text-xl font-black uppercase mb-2">Loading Your Data</h3>
+          <p className="text-gray-400 font-bold">Fetching from blockchain...</p>
+        </div>
+      )
+    }
+
+    if (!isConnected) {
+      return (
+        <div className="text-center py-12">
+          <h3 className="text-xl font-black uppercase mb-2">Connect Wallet</h3>
+          <p className="text-gray-400 font-bold">Connect your wallet to view your dashboard</p>
+        </div>
+      )
+    }
+
     switch (activeTab) {
       case "memes":
-        return <MyMemesTab memes={myMemes} />
+        return <MyMemesTab memes={userMemes} />
       case "stakes":
         return (
           <MyStakesTab 
-            stakes={myStakes} 
+            stakes={userStakes} 
             canWithdraw={true}
             isContestActive={true}
             onWithdraw={handleWithdraw}
+            isLoading={isLoading}
           />
         )
       case "nfts":
@@ -46,46 +179,47 @@ export function DashboardTabs() {
       case "history":
         return <HistoryTab />
       default:
-        return <MyMemesTab memes={myMemes} />
+        return <MyMemesTab memes={userMemes} />
     }
   }
 
   return (
     <div className="space-y-6">
       {/* Tab Navigation */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="flex flex-wrap gap-2">
         {tabs.map((tab) => {
           const Icon = tab.icon
           return (
-            <motion.button
+            <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`p-4 border-4 border-black font-black uppercase text-sm lg:text-base transition-all duration-200 ${
+              className={`flex items-center gap-2 px-6 py-3 font-black uppercase tracking-wide transition-all border-4 ${
                 activeTab === tab.id
-                  ? "bg-yellow-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                  : "bg-white text-black hover:bg-gray-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                  ? "bg-black text-white border-black"
+                  : "bg-white text-black border-black hover:bg-gray-100"
               }`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
-              <div className="flex flex-col items-center gap-2">
-                <Icon className="h-6 w-6" />
-                <span>{tab.label}</span>
-              </div>
-            </motion.button>
+              <Icon className="h-5 w-5" />
+              {tab.label}
+              {tab.id === "memes" && userMemes.length > 0 && (
+                <span className="ml-2 bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-black">
+                  {userMemes.length}
+                </span>
+              )}
+              {tab.id === "stakes" && userStakes.length > 0 && (
+                <span className="ml-2 bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-black">
+                  {userStakes.length}
+                </span>
+              )}
+            </button>
           )
         })}
       </div>
 
       {/* Tab Content */}
-      <motion.div
-        key={activeTab}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
+      <div className="min-h-[400px]">
         {renderTabContent()}
-      </motion.div>
+      </div>
     </div>
   )
 }

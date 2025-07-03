@@ -4,8 +4,8 @@ import MemeNFTABI from '../abi/MemeNFT.json';
 import TwitterEngagementABI from '../abi/TwitterEngagement.json';
 
 export const CONTRACT_ADDRESSES = {
-  MEME_STAKING: '0xBC1D7C1B312a40c38D069071EE5618E25A6701fC' as Address,
-  TWITTER_ENGAGEMENT: '0x6F8a4C7c48F6f82A9E2c41bB1627BdEadBFEe0bE' as Address,
+  MEME_STAKING: '0x79593ac71642f42bdbde4eb5d1e8260c0019e4f7' as Address,
+  TWITTER_ENGAGEMENT: '0x6A94bE0044A41B59dD072Ef232e9efC5747E331D' as Address,
   MEME_NFT: '0x1486cF91b47D3055512E58D40f414F445EFB134E' as Address,
 } as const;
 

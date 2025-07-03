@@ -16,26 +16,32 @@ interface MemeCardProps {
   meme: Meme
   showTwitterLikes?: boolean
   showViews?: boolean
-  isStakeable?: boolean
-  stakeDelay?: number // seconds until stakeable
-  userHasStaked?: boolean
-  userStakeAmount?: number
   onStake?: (memeId: number, amount: string) => Promise<void>
+  stakeInfo?: {
+    isStakeable: boolean
+    stakeDelay: number
+    userHasStaked: boolean
+    userStakeAmount: number
+  }
 }
 
 export function MemeCard({ 
   meme, 
   showTwitterLikes = false, 
   showViews = false, 
-  isStakeable = true,
-  stakeDelay = 0,
-  userHasStaked = false,
-  userStakeAmount = 0,
-  onStake 
+  onStake,
+  stakeInfo = {
+    isStakeable: false,
+    stakeDelay: 0,
+    userHasStaked: false,
+    userStakeAmount: 0
+  }
 }: MemeCardProps) {
   const { isConnected, connectWallet } = useWalletContext()
   const { showToast } = useToast()
   const [showStakeModal, setShowStakeModal] = useState(false)
+  const [stakeAmount, setStakeAmount] = useState("")
+  const [isStaking, setIsStaking] = useState(false)
 
   const handleStakeClick = async () => {
     if (!isConnected) {
@@ -44,8 +50,8 @@ export function MemeCard({
       return
     }
 
-    if (!isStakeable && stakeDelay > 0) {
-      const delayMinutes = Math.ceil(stakeDelay / 60)
+    if (!stakeInfo.isStakeable && stakeInfo.stakeDelay > 0) {
+      const delayMinutes = Math.ceil(stakeInfo.stakeDelay / 60)
       showToast(`Meme too new for staking. Wait ${delayMinutes} more minute(s).`, "warning")
       return
     }
@@ -54,9 +60,14 @@ export function MemeCard({
   }
 
   const handleStake = async (memeId: number, amount: string) => {
-    if (onStake) {
+    if (!onStake) return
+    
+    setIsStaking(true)
+    try {
       await onStake(memeId, amount)
-      showToast(`Successfully staked ${amount} BNB on "${meme.title}"!`, "success")
+      setStakeAmount("")
+    } finally {
+      setIsStaking(false)
     }
   }
 
@@ -70,8 +81,8 @@ export function MemeCard({
       )
     }
 
-    if (!isStakeable && stakeDelay > 0) {
-      const delayMinutes = Math.ceil(stakeDelay / 60)
+    if (!stakeInfo.isStakeable && stakeInfo.stakeDelay > 0) {
+      const delayMinutes = Math.ceil(stakeInfo.stakeDelay / 60)
       return (
         <>
           <Clock className="mr-2 h-4 w-4" />
@@ -80,11 +91,11 @@ export function MemeCard({
       )
     }
 
-    if (userHasStaked) {
+    if (stakeInfo.userHasStaked) {
       return (
         <>
           <Coins className="mr-2 h-4 w-4" />
-          ADD MORE ({userStakeAmount} BNB)
+          ADD MORE ({stakeInfo.userStakeAmount} BNB)
         </>
       )
     }
@@ -98,8 +109,8 @@ export function MemeCard({
   }
 
   const getStakeButtonVariant = () => {
-    if (!isConnected || (!isStakeable && stakeDelay > 0)) return "secondary"
-    if (userHasStaked) return "warning"
+    if (!isConnected || (!stakeInfo.isStakeable && stakeInfo.stakeDelay > 0)) return "secondary"
+    if (stakeInfo.userHasStaked) return "primary"
     return "primary"
   }
 
@@ -139,14 +150,14 @@ export function MemeCard({
           )}
           
           {/* Stake Status Indicator */}
-          {userHasStaked && (
+          {stakeInfo.userHasStaked && (
             <div className="absolute top-3 left-3 bg-yellow-400 text-black px-2 py-1 border-2 border-black font-black text-xs uppercase">
-              STAKED: {userStakeAmount} BNB
+              STAKED: {stakeInfo.userStakeAmount} BNB
             </div>
           )}
           
           {/* Unstakeable Warning */}
-          {!isStakeable && stakeDelay > 0 && (
+          {!stakeInfo.isStakeable && stakeInfo.stakeDelay > 0 && (
             <div className="absolute bottom-3 left-3 bg-orange-400 text-black px-2 py-1 border-2 border-black font-black text-xs uppercase flex items-center gap-1">
               <AlertTriangle className="h-3 w-3" />
               NEW MEME
@@ -190,17 +201,16 @@ export function MemeCard({
               </div>
             )}
 
+            {/* Engagement Score */}
+            <div className="flex items-center gap-2 bg-green-400 text-white px-3 py-1 border-2 border-black font-black">
+              <Heart className="h-4 w-4" />
+              <span>{Number(meme.engagementScore || 0)}</span>
+            </div>
+
             {showViews && meme.views && (
               <div className="flex items-center gap-2 bg-purple-400 text-white px-3 py-1 border-2 border-black font-black">
                 <Eye className="h-4 w-4" />
                 <span>{meme.views}</span>
-              </div>
-            )}
-
-            {meme.likes && (
-              <div className="flex items-center gap-2 bg-red-400 text-white px-3 py-1 border-2 border-black font-black">
-                <Heart className="h-4 w-4" />
-                <span>{meme.likes}</span>
               </div>
             )}
           </div>
@@ -212,8 +222,8 @@ export function MemeCard({
             <CustomButton 
               variant={getStakeButtonVariant()}
               className="w-full text-lg" 
-              onClick={handleStakeClick}
-              disabled={!isConnected && !isStakeable && stakeDelay > 0}
+              onClick={() => handleStakeClick()}
+              disabled={!isConnected && !stakeInfo.isStakeable && stakeInfo.stakeDelay > 0}
             >
               {getStakeButtonContent()}
             </CustomButton>

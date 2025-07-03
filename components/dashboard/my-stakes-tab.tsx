@@ -6,11 +6,28 @@ interface MyStakesTabProps {
   canWithdraw?: boolean
   isContestActive?: boolean
   onWithdraw?: (stakeId: number) => Promise<void>
+  isLoading?: boolean
 }
 
-export function MyStakesTab({ stakes, canWithdraw = false, isContestActive = true, onWithdraw }: MyStakesTabProps) {
+export function MyStakesTab({ 
+  stakes, 
+  canWithdraw = false, 
+  isContestActive = true, 
+  onWithdraw,
+  isLoading = false 
+}: MyStakesTabProps) {
   return (
     <div className="space-y-6">
+      {/* Loading indicator */}
+      {isLoading && (
+        <div className="text-center py-4">
+          <div className="inline-flex items-center gap-2 bg-blue-100 px-4 py-2 border-2 border-blue-400">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+            <span className="font-bold text-blue-800 uppercase">Processing Transaction...</span>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {stakes.map((stake) => (
           <StakeCard 

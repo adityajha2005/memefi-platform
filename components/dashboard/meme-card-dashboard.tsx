@@ -20,7 +20,11 @@ export function MemeCardDashboard({ meme }: MemeCardDashboardProps) {
         />
         <div className="flex-1">
           <h3 className="font-black text-lg mb-2 uppercase tracking-tight">{meme.title}</h3>
-          <div className="bg-green-400 text-black px-2 py-1 border-2 border-black font-black text-xs uppercase mb-2 inline-block">
+          <div className={`text-black px-2 py-1 border-2 border-black font-black text-xs uppercase mb-2 inline-block ${
+            meme.status === 'active' ? 'bg-green-400' :
+            meme.status === 'rewards_distributed' ? 'bg-yellow-400' :
+            'bg-gray-400'
+          }`}>
             {meme.status || 'ACTIVE'}
           </div>
           <p className="text-sm font-bold text-gray-600 uppercase">

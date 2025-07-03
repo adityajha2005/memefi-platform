@@ -11,8 +11,11 @@ export interface Meme {
   twitterLikes?: number
   views?: number
   trending?: boolean
-  status?: string
+  status: "active" | "deleted" | "rewards_distributed"
   uploadDate?: string
+  exists?: boolean
+  engagementScore?: bigint
+  tweetId?: string
 }
 
 export interface User {
@@ -22,6 +25,7 @@ export interface User {
 
 export interface Stake {
   id: number
+  memeId: number
   memeTitle: string
   image: string
   creator: string
