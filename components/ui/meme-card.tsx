@@ -7,9 +7,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CustomButton } from "@/components/ui/custom-button"
 import { TrendingBadge } from "@/components/ui/trending-badge"
 import { StakeModal } from "@/components/modals/stake-modal"
-import { Coins, Heart, Twitter, Eye, Wallet, Clock, AlertTriangle } from "lucide-react"
+import { Coins, Wallet, Clock, AlertTriangle, ArrowUpRight } from "lucide-react"
 import { useWalletContext } from "@/components/wallet/wallet-provider"
 import { useToast } from "@/components/ui/toast-notification"
+import Link from "next/link"
 import type { Meme } from "@/types"
 
 interface MemeCardProps {
@@ -188,31 +189,20 @@ export function MemeCard({
             <span className="text-sm font-bold text-gray-700 uppercase">{meme.creator.name}</span>
           </div>
 
-          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2 bg-yellow-400 text-black px-3 py-1 border-2 border-black font-black">
               <Coins className="h-4 w-4" />
               <span>{meme.bnbStaked} BNB</span>
             </div>
-
-            {showTwitterLikes && meme.twitterLikes && (
-              <div className="flex items-center gap-2 bg-blue-400 text-white px-3 py-1 border-2 border-black font-black">
-                <Twitter className="h-4 w-4" />
-                <span>{meme.twitterLikes}</span>
-              </div>
-            )}
-
-            {/* Engagement Score */}
-            <div className="flex items-center gap-2 bg-green-400 text-white px-3 py-1 border-2 border-black font-black">
-              <Heart className="h-4 w-4" />
-              <span>{Number(meme.engagementScore || 0)}</span>
-            </div>
-
-            {showViews && meme.views && (
-              <div className="flex items-center gap-2 bg-purple-400 text-white px-3 py-1 border-2 border-black font-black">
-                <Eye className="h-4 w-4" />
-                <span>{meme.views}</span>
-              </div>
-            )}
+            <Link href={`/meme/${meme.id}`}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-yellow-400 text-black p-2 border-2 border-black hover:bg-yellow-500 transition-colors"
+              >
+                <ArrowUpRight className="h-4 w-4" strokeWidth={3} />
+              </motion.div>
+            </Link>
           </div>
 
           <motion.div

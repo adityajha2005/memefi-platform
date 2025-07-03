@@ -1,7 +1,9 @@
 import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Trophy, Crown, Medal, Coins, Twitter } from "lucide-react"
+import { Trophy, Crown, Medal, Coins, ArrowUpRight } from "lucide-react"
+import { motion } from "framer-motion"
+import Link from "next/link"
 import type { Meme } from "@/types"
 
 interface LeaderboardItemProps {
@@ -24,82 +26,26 @@ const getRankIcon = (rank: number) => {
 
 export function LeaderboardItem({ meme, index }: LeaderboardItemProps) {
   return (
-    <div className={`meme-card p-4 ${meme.isWinner ? "winner-glow bg-yellow-50" : ""}`}>
-      {/* Mobile Layout (sm and below) */}
-      <div className="block sm:hidden">
-        {/* Top Row: Rank + Title + Winner Badge */}
-        <div className="flex items-center gap-3 mb-3">
-          <div className="flex items-center justify-center w-10 h-10 flex-shrink-0">
-            {getRankIcon(index + 1)}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-black text-base uppercase tracking-tight truncate">{meme.title}</h3>
-              {meme.isWinner && (
-                <Badge className="bg-yellow-400 text-black border-2 border-black font-black text-xs">
-                  <Trophy className="w-3 h-3 mr-1" />
-                  WINNER
-                </Badge>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Middle Row: Image + Creator */}
-        <div className="flex items-center gap-3 mb-3">
-          <Image
-            src={meme.image || "/placeholder.svg"}
-            alt={meme.title}
-            width={50}
-            height={50}
-            className="rounded-lg object-cover border-2 border-black flex-shrink-0"
-          />
-          <div className="flex items-center gap-2 flex-1 min-w-0">
-            <Avatar className="h-5 w-5 border-2 border-black flex-shrink-0">
-              <AvatarImage src={meme.creator.avatar || "/placeholder.svg"} />
-              <AvatarFallback className="bg-black text-white font-bold text-xs">{meme.creator.name[0]}</AvatarFallback>
-            </Avatar>
-            <span className="text-sm font-bold text-gray-600 uppercase truncate">{meme.creator.name}</span>
-          </div>
-        </div>
-
-        {/* Bottom Row: Stats */}
-        <div className="flex items-center justify-center gap-4">
-          <div className="text-center">
-            <div className="flex items-center gap-1 bg-yellow-400 text-black px-2 py-1 border-2 border-black font-black mb-1">
-              <Coins className="h-3 w-3" />
-              <span className="text-sm">{meme.bnbStaked}</span>
-            </div>
-            <span className="text-xs font-bold text-gray-500 uppercase">BNB</span>
-          </div>
-          <div className="text-center">
-            <div className="flex items-center gap-1 bg-blue-400 text-white px-2 py-1 border-2 border-black font-black mb-1">
-              <Twitter className="h-3 w-3" />
-              <span className="text-sm">{meme.twitterLikes}</span>
-            </div>
-            <span className="text-xs font-bold text-gray-500 uppercase">LIKES</span>
-          </div>
-        </div>
+    <div className={`relative flex items-center gap-4 p-4 bg-white border-2 ${meme.isWinner ? "border-yellow-400" : "border-black"}`}>
+      {/* Rank Icon */}
+      <div className="flex items-center justify-center w-12 h-12">
+        {getRankIcon(index + 1)}
       </div>
 
-      {/* Desktop Layout (sm and above) */}
-      <div className="hidden sm:flex items-center gap-4">
-        <div className="flex items-center justify-center w-12 h-12">{getRankIcon(index + 1)}</div>
-
+      {/* Meme Image and Info */}
+      <div className="flex items-center gap-4 flex-1">
         <Image
           src={meme.image || "/placeholder.svg"}
           alt={meme.title}
-          width={60}
-          height={60}
+          width={48}
+          height={48}
           className="rounded-lg object-cover border-2 border-black"
         />
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <h3 className="font-black text-lg uppercase tracking-tight">{meme.title}</h3>
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-black text-lg uppercase">{meme.title}</h3>
             {meme.isWinner && (
-              <Badge className="bg-yellow-400 text-black border-2 border-black font-black">
-                <Trophy className="w-3 h-3 mr-1" />
+              <Badge className="bg-yellow-400 text-black border-2 border-black font-black text-xs">
                 WINNER
               </Badge>
             )}
@@ -107,28 +53,35 @@ export function LeaderboardItem({ meme, index }: LeaderboardItemProps) {
           <div className="flex items-center gap-2">
             <Avatar className="h-6 w-6 border-2 border-black">
               <AvatarImage src={meme.creator.avatar || "/placeholder.svg"} />
-              <AvatarFallback className="bg-black text-white font-bold text-xs">{meme.creator.name[0]}</AvatarFallback>
+              <AvatarFallback className="bg-black text-white font-bold text-xs">
+                {meme.creator.name[0]}
+              </AvatarFallback>
             </Avatar>
-            <span className="text-sm font-bold text-gray-600 uppercase">{meme.creator.name}</span>
+            <span className="text-sm font-bold text-gray-600">{meme.creator.name}</span>
           </div>
         </div>
+      </div>
 
-        <div className="flex items-center gap-4 lg:gap-6">
-          <div className="text-center">
-            <div className="flex items-center gap-1 bg-yellow-400 text-black px-2 py-1 border-2 border-black font-black mb-1">
-              <Coins className="h-4 w-4" />
-              <span>{meme.bnbStaked}</span>
-            </div>
-            <span className="text-xs font-bold text-gray-500 uppercase">BNB STAKED</span>
+      {/* BNB Amount and Arrow */}
+      <div className="flex items-center gap-3">
+        <div>
+          <div className="flex items-center gap-2 bg-yellow-400 text-black px-3 py-1 border-2 border-black font-black">
+            <Coins className="h-4 w-4" />
+            <span>{meme.bnbStaked}</span>
           </div>
-          <div className="text-center">
-            <div className="flex items-center gap-1 bg-blue-400 text-white px-2 py-1 border-2 border-black font-black mb-1">
-              <Twitter className="h-4 w-4" />
-              <span>{meme.twitterLikes}</span>
-            </div>
-            <span className="text-xs font-bold text-gray-500 uppercase">LIKES</span>
+          <div className="text-xs font-bold text-gray-500 uppercase text-center mt-1">
+            BNB STAKED
           </div>
         </div>
+        <Link href={`/meme/${meme.id}`}>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-yellow-400 text-black p-2 border-2 border-black hover:bg-yellow-500 transition-colors"
+          >
+            <ArrowUpRight className="h-4 w-4" strokeWidth={3} />
+          </motion.div>
+        </Link>
       </div>
     </div>
   )
