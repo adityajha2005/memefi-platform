@@ -10,11 +10,15 @@ import Image from "next/image"
 import { useMemeStaking } from "@/hooks/use-meme-staking"
 import type { Meme } from "@/types"
 import { useRouter } from "next/navigation"
+import { useWalletContext } from "@/components/wallet/wallet-provider"
+
 export function ExploreGrid() {
   const [visibleMemes, setVisibleMemes] = useState(6)
   const [memes, setMemes] = useState<Meme[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { getNextMemeId, getMeme } = useMemeStaking()
+  const { isConnected } = useWalletContext()
+  const router = useRouter()
 
   useEffect(() => {
     const loadMemes = async () => {
@@ -65,8 +69,6 @@ export function ExploreGrid() {
     )
   }
 
-  const router = useRouter()
-
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -110,9 +112,21 @@ export function ExploreGrid() {
                 </div>
               </div>
 
-              <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
-                Stake BNB
-              </Button>
+              {isConnected ? (
+                <Button 
+                  onClick={() => router.push(`/meme/${meme.id}`)}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                >
+                  Stake BNB
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => router.push(`/meme/${meme.id}`)}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                >
+                  View Details
+                </Button>
+              )}
             </div>
           </Card>
         ))}

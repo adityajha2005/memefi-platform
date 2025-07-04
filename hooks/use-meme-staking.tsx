@@ -70,12 +70,11 @@ export function useMemeStaking(): UseMemeStakingReturn {
   }, [])
 
   const getReadOnlyContract = useCallback(async () => {
-    if (typeof window === "undefined" || !window.ethereum) {
-      throw new Error("MetaMask not available")
-    }
-
     const { ethers } = await import("ethers")
-    const provider = new ethers.BrowserProvider(window.ethereum)
+    // Use public RPC URL for BSC testnet if MetaMask is not available
+    const provider = typeof window !== "undefined" && window.ethereum
+      ? new ethers.BrowserProvider(window.ethereum)
+      : new ethers.JsonRpcProvider("https://data-seed-prebsc-1-s1.binance.org:8545")
     
     return new ethers.Contract(
       MEME_STAKING_CONTRACT.address,
