@@ -4,7 +4,6 @@ import { LeaderboardItem } from "@/components/ui/leaderboard-item"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState, useEffect, useMemo } from "react"
 import { useMemeStaking } from "@/hooks/use-meme-staking"
-import { useWalletContext } from "@/components/wallet/wallet-provider"
 import { Loader2 } from "lucide-react"
 import type { Meme } from "@/types"
 
@@ -19,16 +18,9 @@ export function LeaderboardSection() {
   const [error, setError] = useState<string | null>(null)
 
   const { getNextMemeId, getMeme } = useMemeStaking()
-  const { isConnected } = useWalletContext()
 
   useEffect(() => {
     const loadLeaderboardData = async () => {
-      if (!isConnected) {
-        setMemes([])
-        setIsLoading(false)
-        return
-      }
-
       setIsLoading(true)
       setError(null)
 
@@ -52,8 +44,6 @@ export function LeaderboardSection() {
         const memeResults = await Promise.all(memePromises)
         
         // Convert to Meme format and filter out nulls
-        console.log("Raw meme results:", memeResults) // Debug log
-        
         const validMemes: Meme[] = memeResults
           .filter((meme): meme is NonNullable<typeof meme> => meme !== null)
           .map((meme) => ({
@@ -89,16 +79,7 @@ export function LeaderboardSection() {
     }
 
     loadLeaderboardData()
-  }, [isConnected, getNextMemeId, getMeme])
-
-  if (!isConnected) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-lg font-bold text-gray-400 mb-2">🔗 Connect Wallet Required</p>
-        <p className="text-sm text-gray-500">Connect your wallet to view the leaderboard</p>
-      </div>
-    )
-  }
+  }, [getNextMemeId, getMeme])
 
   if (isLoading) {
     return (
