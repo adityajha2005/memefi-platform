@@ -1,5 +1,5 @@
 import { CustomButton } from "@/components/ui/custom-button"
-import { Coins, Eye, Heart } from "lucide-react"
+import { Coins } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import type { Meme } from "@/types"
@@ -10,7 +10,7 @@ interface MemeCardDashboardProps {
 
 export function MemeCardDashboard({ meme }: MemeCardDashboardProps) {
   return (
-    <div className="meme-card p-4">
+    <div className="bg-white p-4 border-2 border-black">
       <div className="flex items-start gap-4 mb-4">
         <Image
           src={meme.image || "/placeholder.svg"}
@@ -34,7 +34,7 @@ export function MemeCardDashboard({ meme }: MemeCardDashboardProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 gap-4 mb-4">
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 bg-yellow-400 text-black px-2 py-1 border-2 border-black font-black mb-1">
             <Coins className="h-4 w-4" />
@@ -42,24 +42,21 @@ export function MemeCardDashboard({ meme }: MemeCardDashboardProps) {
           </div>
           <span className="text-xs font-bold text-gray-500 uppercase">BNB STAKED</span>
         </div>
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1 bg-blue-400 text-white px-2 py-1 border-2 border-black font-black mb-1">
-            <Eye className="h-4 w-4" />
-            <span>{meme.views || 0}</span>
+      </div>
+
+      {/* Coming Soon Badge */}
+      <div className="mb-4">
+        <div className="bg-black text-white p-3">
+          <div className="flex items-center gap-2">
+            <span className="bg-yellow-400 text-black px-2 py-0.5 text-xs font-black uppercase">Coming Soon</span>
+            <span>🚀</span>
           </div>
-          <span className="text-xs font-bold text-gray-500 uppercase">VIEWS</span>
-        </div>
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1 bg-red-400 text-white px-2 py-1 border-2 border-black font-black mb-1">
-            <Heart className="h-4 w-4" />
-            <span>{meme.likes || 0}</span>
-          </div>
-          <span className="text-xs font-bold text-gray-500 uppercase">LIKES</span>
+          <p className="text-gray-400 uppercase text-xs mt-1">Engagement Metrics</p>
         </div>
       </div>
 
       <Link href={`/meme/${meme.id}`} className="block">
-        <CustomButton variant="secondary" className="w-full">
+        <CustomButton variant="secondary" className="w-full bg-black text-white hover:bg-gray-900">
           VIEW DETAILS
         </CustomButton>
       </Link>

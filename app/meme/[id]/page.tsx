@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { useMemeStaking } from "@/hooks/use-meme-staking"
-import { Loader2, Coins, Eye, Heart } from "lucide-react"
+import { Loader2, Coins } from "lucide-react"
 import Image from "next/image"
 import { CustomButton } from "@/components/ui/custom-button"
 import { useToast } from "@/components/ui/toast-notification"
@@ -18,8 +18,6 @@ interface MemeDetails {
   totalStaked: string
   ipfsHash: string
   rewardDistributed: boolean
-  views: number
-  likes: number
 }
 
 export default function MemePage() {
@@ -50,8 +48,6 @@ export default function MemePage() {
           totalStaked: memeData.totalStaked.toString(),
           ipfsHash: memeData.ipfsHash,
           rewardDistributed: memeData.rewardDistributed,
-          views: 0, // TODO: Implement view tracking
-          likes: 0, // TODO: Implement like system
         })
       } catch (error) {
         console.error("Failed to load meme:", error)
@@ -92,6 +88,17 @@ export default function MemePage() {
   return (
     <div className="container mx-auto py-12">
       <div className="max-w-4xl mx-auto">
+        {/* Coming Soon Banner */}
+        <div className="bg-black text-white p-4 mb-8">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="bg-yellow-400 text-black px-3 py-1 font-black text-sm uppercase">Coming Soon</span>
+            <span>🚀</span>
+          </div>
+          <p className="text-gray-400 uppercase text-sm">
+            Soon you'll be able to track views, likes, and Twitter engagement for this meme. Stay tuned for exciting updates!
+          </p>
+        </div>
+
         {/* Meme Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-black uppercase">{meme.title}</h1>
@@ -137,27 +144,13 @@ export default function MemePage() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-2 bg-yellow-400 text-black px-3 py-2 border-2 border-black font-black mb-1">
                   <Coins className="h-5 w-5" />
                   <span>{Number(meme.totalStaked) / 1e18}</span>
                 </div>
                 <span className="text-sm font-bold text-gray-500 uppercase">BNB Staked</span>
-              </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-2 bg-blue-400 text-white px-3 py-2 border-2 border-black font-black mb-1">
-                  <Eye className="h-5 w-5" />
-                  <span>{meme.views}</span>
-                </div>
-                <span className="text-sm font-bold text-gray-500 uppercase">Views</span>
-              </div>
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-2 bg-red-400 text-white px-3 py-2 border-2 border-black font-black mb-1">
-                  <Heart className="h-5 w-5" />
-                  <span>{meme.likes}</span>
-                </div>
-                <span className="text-sm font-bold text-gray-500 uppercase">Likes</span>
               </div>
             </div>
 

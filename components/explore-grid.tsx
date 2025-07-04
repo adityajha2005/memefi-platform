@@ -35,8 +35,8 @@ export function ExploreGrid() {
                 avatar: "/placeholder-user.jpg" 
               },
               bnbStaked: Number(meme.totalStaked) / 1e18,
-              twitterLikes: Number(meme.engagementScore || 0),
-              trending: Number(meme.totalStaked) > 1e18, // More than 1 BNB staked
+              // twitterLikes: Number(meme.engagementScore || 0),
+              // trending: Number(meme.totalStaked) > 1e18, // More than 1 BNB staked
               exists: meme.exists,
               status: meme.rewardDistributed ? "rewards_distributed" : "active" as const
             })
@@ -80,7 +80,7 @@ export function ExploreGrid() {
                 height={300}
                 className="w-full h-48 object-cover"
               />
-              {meme.trending && (
+              {(
                 <Badge className="absolute top-2 right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white">
                   <TrendingUp className="w-3 h-3 mr-1" />
                   Hot
@@ -106,7 +106,7 @@ export function ExploreGrid() {
                 </div>
                 <div className="flex items-center gap-1 text-blue-600 cursor-pointer"
                   onClick={() => router.push(`/meme/${meme.id}`)}>
-                  <span className="font-semibold">{meme.twitterLikes}</span>
+                  {/* <span className="font-semibold">{meme.twitterLikes}</span> */}
                 </div>
               </div>
 

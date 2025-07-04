@@ -7,15 +7,9 @@ export interface Meme {
     avatar: string
   }
   bnbStaked: number
-  likes?: number
-  twitterLikes?: number
-  views?: number
-  trending?: boolean
   status: "active" | "deleted" | "rewards_distributed"
   uploadDate?: string
   exists?: boolean
-  engagementScore?: bigint
-  tweetId?: string
 }
 
 export interface User {

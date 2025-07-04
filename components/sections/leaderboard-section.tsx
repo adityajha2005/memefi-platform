@@ -14,7 +14,6 @@ interface LeaderboardMeme extends Meme {
 }
 
 export function LeaderboardSection() {
-  const [sortBy, setSortBy] = useState<"staked" | "liked">("staked")
   const [memes, setMemes] = useState<LeaderboardMeme[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -66,19 +65,20 @@ export function LeaderboardSection() {
               avatar: "/placeholder-user.jpg"
             },
             bnbStaked: Number(meme.totalStaked) / 1e18,
-            twitterLikes: Number(meme.engagementScore || 0), // Use engagement score from contract
             description: "Active meme",
-            status: meme.rewardDistributed ? "rewards_distributed" : "active",
-            engagementScore: meme.engagementScore || BigInt(0),
-            tweetId: meme.tweetId
+            status: meme.rewardDistributed ? "rewards_distributed" : "active"
           }))
 
-        // Store unsorted memes
-        setMemes(validMemes.map((meme, index) => ({
-          ...meme,
-          rank: index + 1,
-          isWinner: false
-        })))
+        // Sort by BNB staked and add rank
+        const sortedMemes = validMemes
+          .sort((a, b) => b.bnbStaked - a.bnbStaked)
+          .map((meme, index) => ({
+            ...meme,
+            rank: index + 1,
+            isWinner: index === 0
+          }))
+
+        setMemes(sortedMemes)
       } catch (err: any) {
         console.error("Failed to load leaderboard data:", err)
         setError("Failed to load leaderboard data")
@@ -90,22 +90,6 @@ export function LeaderboardSection() {
 
     loadLeaderboardData()
   }, [isConnected, getNextMemeId, getMeme])
-
-  // Move sorting logic to a useMemo to prevent unnecessary recalculations
-  const sortedData = useMemo(() => {
-    return [...memes]
-      .sort((a, b) => {
-        if (sortBy === "staked") {
-          return b.bnbStaked - a.bnbStaked
-        }
-        return Number(b.engagementScore || 0) - Number(a.engagementScore || 0)
-      })
-      .map((meme, index) => ({
-        ...meme,
-        rank: index + 1,
-        isWinner: index === 0
-      }))
-  }, [memes, sortBy])
 
   if (!isConnected) {
     return (
@@ -144,37 +128,29 @@ export function LeaderboardSection() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <Tabs defaultValue="staked" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-sm sm:max-w-md mx-auto bg-black border-4 border-black">
-          <TabsTrigger
-            value="staked"
-            onClick={() => setSortBy("staked")}
-            className="font-black uppercase text-white data-[state=active]:bg-green-400 data-[state=active]:text-black text-xs sm:text-sm"
-          >
-            MOST STAKED
-          </TabsTrigger>
-          <TabsTrigger
-            value="liked"
-            onClick={() => setSortBy("liked")}
-            className="font-black uppercase text-white data-[state=active]:bg-red-400 data-[state=active]:text-black text-xs sm:text-sm"
-          >
-            MOST LIKED
-          </TabsTrigger>
-        </TabsList>
+    <div className="space-y-6">
+      {/* Coming Soon Banner */}
+      <div className="bg-black text-white p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="bg-yellow-400 text-black px-3 py-1 font-black text-sm uppercase">Coming Soon</span>
+          <span>🚀</span>
+        </div>
+        <p className="text-gray-400 uppercase text-sm">
+          Twitter engagement metrics and social leaderboard
+        </p>
+      </div>
 
-        <TabsContent value="staked" className="space-y-3 sm:space-y-4">
-          {sortedData.map((meme, index) => (
+      {/* Leaderboard Content */}
+      <div className="space-y-4">
+        <div className="bg-black text-white py-3 font-black uppercase text-center">
+          MOST STAKED
+        </div>
+        <div className="space-y-3">
+          {memes.map((meme, index) => (
             <LeaderboardItem key={meme.id} meme={meme} index={index} />
           ))}
-        </TabsContent>
-
-        <TabsContent value="liked" className="space-y-3 sm:space-y-4">
-          {sortedData.map((meme, index) => (
-            <LeaderboardItem key={meme.id} meme={meme} index={index} />
-          ))}
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
     </div>
   )
 }

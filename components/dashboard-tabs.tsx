@@ -196,6 +196,17 @@ export function DashboardTabs() {
 
   return (
     <div className="space-y-8">
+      {/* Coming Soon Banner */}
+      <div className="bg-black text-white p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="bg-yellow-400 text-black px-3 py-1 font-black text-sm uppercase">Coming Soon</span>
+          <span>🚀</span>
+        </div>
+        <p className="text-gray-400 uppercase text-sm">
+          Track your meme's performance with Twitter engagement metrics, earn rewards, and compete for the top spot on the leaderboard.
+        </p>
+      </div>
+
       {/* Tab Navigation */}
       <div className="flex gap-4">
         {tabs.map((tab) => {
